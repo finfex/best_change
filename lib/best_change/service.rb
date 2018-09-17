@@ -79,7 +79,8 @@ module BestChange
     end
 
     def base_rate_multiplicator
-      @base_rate_multiplicator ||= Universe.currency_rates_repository.find_currency_rate_by_pair(currency_pair).rate_value
+      # TODO вынести в конфиг
+      @base_rate_multiplicator ||= GERA::Universe.currency_rates_repository.find_currency_rate_by_pair(currency_pair).rate_value
     end
   end
 end
