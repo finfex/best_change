@@ -2,18 +2,18 @@ require 'spec_helper'
 require 'best_change/row'
 
 RSpec.describe BestChange::PositionService, type: :services do
-  include Mathematic
+  include Gera::Mathematic
 
 	let(:br_data) { Oj.load(File.read 'spec/fixtures/bestchange.json').each_with_index { |row, index| row.position = index }  }
 
   let(:br_rate) { br_data.find { |d| d.is_my? }.rate }
 
   # Рейт из bestchange data
-  let!(:current_rate)       { Rate.new in_amount: 640307.14285714, out_amount: 1.0 }
-  let!(:currency_pair)      { CurrencyPair.new RUB, BTC }
+  let!(:current_rate)       { Gera::Rate.new in_amount: 640307.14285714, out_amount: 1.0 }
+  let!(:currency_pair)      { Gera::CurrencyPair.new RUB, BTC }
   let(:payment_system_from) { create :payment_system, type_cy: currency_pair.first.local_id } # RUB
   let(:payment_system_to)   { create :payment_system, type_cy: currency_pair.second.local_id } # BTC
-  let(:direction)           { Direction.new payment_system_from: payment_system_from, payment_system_to: payment_system_to }
+  let(:direction)           { Gera::Direction.new payment_system_from: payment_system_from, payment_system_to: payment_system_to }
 
   # (СберОнлайн->Bitcoin)
   let!(:bestchange_key) { '42-93' }
@@ -25,7 +25,8 @@ RSpec.describe BestChange::PositionService, type: :services do
   let!(:direction_rate_snapshot) { create :direction_rate_snapshot }
 
   let!(:exchange_rate) {
-    ExchangeRate.find_by(payment_system_from: direction.payment_system_from, payment_system_to: direction.payment_system_to) ||
+    # TODO пернести в factory
+    Gera::ExchangeRate.find_by(payment_system_from: direction.payment_system_from, payment_system_to: direction.payment_system_to) ||
     create(:exchange_rate, payment_system_to: direction.payment_system_to, payment_system_from: direction.payment_system_from)
   }
 

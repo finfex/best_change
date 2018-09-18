@@ -4,12 +4,14 @@ Bundler.require(:test)
 # Подгружать ДО BestChange
 require_relative 'support/stub'
 
+require 'factory_bot'
 require 'virtus'
 require 'grape'
 require 'grape-entity'
 require 'auto_logger'
 require 'fast_jsonapi'
 require 'sidekiq'
+require 'gera'
 
 require 'money'
 require 'active_support'
@@ -18,14 +20,11 @@ require 'active_support/core_ext/module/delegation'
 require 'active_support/all'
 require 'active_support/core_ext/module'
 
-# TODO вынести в crypto_math
-require_relative 'support/mathematic'
-require_relative 'support/rate_from_multiplicator'
-require_relative 'support/rate'
-require_relative 'support/currency_pair'
-require_relative 'support/money'
-
 require "best_change"
+
+FactoryBot.definition_file_paths << Gera::FACTORY_PATH
+
+Gera::MoneySupport.init
 
 BestChange.configure do |config|
   config.redis = "redis://#{ENV['REDIS_HOST'] || 'localhost' }:6379/1"
@@ -44,11 +43,21 @@ VCR.configure do |c|
 end
 
 RSpec.configure do |config|
+  config.include FactoryBot::Syntax::Methods
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 
   # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
+
+  config.before(:each) do
+    Gera::Universe.clear!
+  end
+
+  config.before(:suite) do
+    puts FactoryBot.definition_file_paths
+    FactoryBot.find_definitions
+  end
 
   config.expect_with :rspec do |c|
     c.syntax = :expect

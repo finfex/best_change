@@ -1,9 +1,11 @@
+# require 'gera/methematic'
+
 module BestChange
   class Service
     ROUND = 4
     include Virtus.model strict: true
     include AutoLogger
-    include CryptoMath::Mathematic
+    include Gera::Mathematic
 
     attribute :exchange_rate #, ExchangeRate
 
@@ -68,7 +70,7 @@ module BestChange
         target_type:                  :rate,
         target_base_percent_rate:     exchange_rate.comission,
         bestchange_base_percent_rate: row.base_rate_percent,
-        finite_rate:                  CryptoMath::Rate.new(in_amount: row.buy_price, out_amount: row.sell_price)
+        finite_rate:                  Gera::Rate.new(in_amount: row.buy_price, out_amount: row.sell_price)
       )
       bcs.state = bcs.bestchange_base_percent_rate.round(ROUND) == bcs.target_base_percent_rate.round(ROUND) ? Status::STATE_ACTUAL : Status::STATE_AWAIT
       bcs
@@ -80,7 +82,7 @@ module BestChange
 
     def base_rate_multiplicator
       # TODO вынести в конфиг
-      @base_rate_multiplicator ||= GERA::Universe.currency_rates_repository.find_currency_rate_by_pair(currency_pair).rate_value
+      @base_rate_multiplicator ||= Gera::Universe.currency_rates_repository.find_currency_rate_by_pair(currency_pair).rate_value
     end
   end
 end

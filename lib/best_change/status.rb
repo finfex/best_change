@@ -1,3 +1,4 @@
+require 'gera/rate'
 module BestChange
   class Status
     include Virtus.model strict: true
@@ -25,6 +26,6 @@ module BestChange
     # Целевая позиция в bestchange
     attribute :target_position, Integer
 
-    attribute :finite_rate, CryptoMath::Rate
+    attribute :finite_rate, Gera::Rate
   end
 end

@@ -1,3 +1,5 @@
+require 'gera'
+
 require "best_change/version"
 require "best_change/redis_repository"
 require "best_change/last_pull"
