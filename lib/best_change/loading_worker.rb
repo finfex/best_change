@@ -12,7 +12,9 @@ module BestChange
     OPEN_TIMEOUT = 1
     READ_TIMEOUT = 10
 
-    URL = URI.parse 'http://www.bestchange.ru/bm/info.zip'
+    # Было: http://www.bestchange.ru/bm/info.zip
+    #
+    URL = URI.parse 'http://api.bestchange.ru/info.zip'
 
     def perform
       logger.info "Start"
