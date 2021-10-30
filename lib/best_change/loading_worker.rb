@@ -9,6 +9,8 @@ module BestChange
     include ::Sidekiq::Worker
     include ::AutoLogger
 
+    sidekiq_options retry: false
+
     OPEN_TIMEOUT = 1
     READ_TIMEOUT = 10
 
