@@ -30,7 +30,7 @@ class BestChange::PositionService
       comission  = row.base_rate_percent - step
     end
 
-    exchange_rate.update! comission: comission
+    exchange_rate.update_columns(comission: comission)
   end
 
   private
