@@ -9,7 +9,7 @@ module BestChange
     include ::Sidekiq::Worker
     include ::AutoLogger
 
-    sidekiq_options retry: false
+    sidekiq_options retry: false, lock: :until_executed
 
     OPEN_TIMEOUT = 1
     READ_TIMEOUT = 10
