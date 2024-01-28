@@ -30,7 +30,9 @@ class BestChange::PositionService
       comission  = row.base_rate_percent - step
     end
 
-    exchange_rate.update! comission: comission
+    logger = Logger.new("#{Rails.root}/log/call_exchange_rate_updater_worker.log")
+    logger.info("Calls perform_in from BestChange::PositionService")
+    Gera::ExchangeRateUpdaterWorker.perform_in(Random.new.rand(1..10).seconds, exchange_rate.id, { comission: comission })
   end
 
   private
